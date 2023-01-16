@@ -1,15 +1,31 @@
 import numpy as np
 import cv2 as cv
 from keras.preprocessing.image import ImageDataGenerator
+import os
 
-traindatagen = ImageDataGenerator(featurewise_center=False, featurewise_std_normalization=False, 
-                                rotation_range=20, width_shift_range=0.3, height_shift_range=0.3, brightness_range=0.4)
+batchSize = 10
+fileName = "Lena.jpg"
+inputDirectory = "images"
+outputDirectory = "images/output/"
 
-image = cv.imread('images/lena.jpg')
+#--- ImageDataGenerator Args---#
+featureWiseCenter = False
+featureWiseSTDNormalization = False
+rotationRange = 20
+widthShiftRange = 0.3
+heightShiftRange = 0.3
+brightnessRange = (0.7, 1)
+
+
+
+traindatagen = ImageDataGenerator(featurewise_center=featureWiseCenter, featurewise_std_normalization=featureWiseSTDNormalization,
+                                  rotation_range=rotationRange, width_shift_range=widthShiftRange, height_shift_range=heightShiftRange, brightness_range=brightnessRange)
+
+image = cv.imread(inputDirectory + "/" + fileName)
 images = image[np.newaxis, :, :, :]
 
-for i in range(6):
+for i in range(batchSize):
     # generate batch of images
-    process_images = traindatagen.flow(images).next()
-    process_image = process_images[0, :, :, :]
-    cv.imwrite('images/output/lena' + str(i) + '.jpg', process_image)  
+    processimages = traindatagen.flow(images).next()
+    processimage = processimages[0, :, :, :]
+    cv.imwrite(outputDirectory + "/" + str(i) + fileName, processimage)
